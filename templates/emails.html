@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Emails - Daily Email & Task Agent{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Email Processing</h1>
+                <p class="text-gray-600 mt-1">View and manage your processed emails</p>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="triggerEmailProcessing()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    <i class="fas fa-sync mr-2"></i>Process Emails
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                    <i class="fas fa-envelope text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Total Emails</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_emails }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                    <i class="fas fa-check-circle text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Processed</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ processed_emails }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                    <i class="fas fa-clock text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Pending</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ unprocessed_emails }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emails List -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Recent Emails</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Summary</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Importance</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tasks</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Received</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for email in emails %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ email.sender.split('@')[0] if '@' in email.sender else email.sender }}</div>
+                            <div class="text-sm text-gray-500">{{ email.sender.split('@')[1] if '@' in email.sender else '' }}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-medium text-gray-900">{{ email.subject[:60] }}{% if email.subject|length > 60 %}...{% endif %}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-600">{{ email.summary[:100] if email.summary else 'No summary available' }}{% if email.summary and email.summary|length > 100 %}...{% endif %}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% set importance = email.importance_score or 0 %}
+                            {% if importance >= 0.8 %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">High</span>
+                            {% elif importance >= 0.6 %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Medium</span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Low</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if email.has_action_items %}
+                                <i class="fas fa-tasks text-green-600"></i>
+                            {% else %}
+                                <i class="fas fa-minus text-gray-400"></i>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ email.received_at.strftime('%Y-%m-%d %H:%M') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function triggerEmailProcessing() {
+        try {
+            await axios.post('/api/process-emails');
+            alert('Email processing started! Check back in a few minutes.');
+            location.reload();
+        } catch (error) {
+            alert('Error triggering email processing: ' + error.response.data.detail);
+        }
+    }
+</script>
+{% endblock %}

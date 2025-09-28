@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Summaries - Daily Email & Task Agent{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Daily Summaries</h1>
+                <p class="text-gray-600 mt-1">AI-generated daily reports of your email activity</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summaries -->
+    {% if summaries %}
+        <div class="space-y-6">
+            {% for summary in summaries %}
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-900">
+                            {{ summary.date.strftime('%B %d, %Y') }}
+                        </h2>
+                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                            <span><i class="fas fa-envelope mr-1"></i>{{ summary.total_emails_processed }} emails</span>
+                            <span><i class="fas fa-tasks mr-1"></i>{{ summary.tasks_extracted }} tasks</span>
+                            <span><i class="fas fa-dollar-sign mr-1"></i>${{ "%.4f"|format(summary.total_cost or 0) }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Summary Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-600">{{ summary.total_emails_processed }}</div>
+                            <div class="text-sm text-gray-600">Emails Processed</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600">{{ summary.tasks_extracted }}</div>
+                            <div class="text-sm text-gray-600">Tasks Extracted</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-orange-600">{{ summary.high_priority_tasks }}</div>
+                            <div class="text-sm text-gray-600">High Priority</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-600">{{ summary.total_tokens_used or 0 }}</div>
+                            <div class="text-sm text-gray-600">Tokens Used</div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Summary -->
+                    {% if summary.summary_text %}
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">
+                            <i class="fas fa-brain mr-2 text-blue-600"></i>AI Summary
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">{{ summary.summary_text }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Top Senders -->
+                    {% if summary.top_senders %}
+                    <div class="mt-4">
+                        <h4 class="text-md font-medium text-gray-900 mb-2">Top Senders</h4>
+                        <div class="flex flex-wrap gap-2">
+                            {% for sender in summary.top_senders %}
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">{{ sender }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Key Topics -->
+                    {% if summary.key_topics %}
+                    <div class="mt-4">
+                        <h4 class="text-md font-medium text-gray-900 mb-2">Key Topics</h4>
+                        <div class="flex flex-wrap gap-2">
+                            {% for topic in summary.key_topics %}
+                            <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">{{ topic }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- No Summaries -->
+        <div class="bg-white rounded-lg shadow p-12 text-center">
+            <i class="fas fa-chart-line text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-xl font-medium text-gray-900 mb-2">No Daily Summaries Yet</h3>
+            <p class="text-gray-600 mb-6">Daily summaries will appear here once email processing begins.</p>
+            <button onclick="triggerEmailProcessing()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                <i class="fas fa-sync mr-2"></i>Process Emails Now
+            </button>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function triggerEmailProcessing() {
+        try {
+            await axios.post('/api/process-emails');
+            alert('Email processing started! Check back in a few minutes.');
+            location.reload();
+        } catch (error) {
+            alert('Error triggering email processing: ' + error.response.data.detail);
+        }
+    }
+</script>
+{% endblock %}
