@@ -5,12 +5,19 @@
 **Daily Email & Task Agent** is an AI-powered automation system that processes Gmail emails, extracts actionable tasks, and syncs them with Google Tasks. It provides a modern web interface for managing emails, tasks, and daily summaries.
 
 ### 🎯 Core Functionality
-- **Gmail Integration**: Fetches and processes emails automatically
-- **AI Analysis**: Uses OpenAI GPT models for email summarization and task extraction
-- **Task Management**: Creates and syncs tasks with Google Tasks
-- **Web Dashboard**: Modern FastAPI-based web interface
-- **Automated Scheduling**: Daily processing with configurable timing
-- **Monitoring & Analytics**: Comprehensive logging and health checks
+- **Gmail Integration**: Fetches and processes emails automatically using OAuth2
+- **AI Analysis**: Uses OpenAI GPT-4o-mini for email summarization, importance scoring, and task extraction
+- **Task Management**: Creates and syncs tasks with Google Tasks API
+- **Web Dashboard**: Modern FastAPI-based web interface with Tailwind CSS
+- **Automated Scheduling**: Daily processing with APScheduler (configurable timing)
+- **Monitoring & Analytics**: Comprehensive logging, health checks, and cost tracking
+
+### 🏆 Key Features
+- **Smart Email Processing**: Importance scoring (0-1 scale), sentiment analysis, and automatic summarization
+- **Intelligent Task Extraction**: AI identifies actionable items with confidence scoring
+- **Cost Monitoring**: Tracks OpenAI API usage, tokens, and costs per operation
+- **Offline Capability**: Local SQLite database for offline access to processed data
+- **Security First**: OAuth2 authentication, local data processing, no external data storage
 
 ---
 

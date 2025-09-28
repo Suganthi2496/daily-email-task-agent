@@ -4,103 +4,192 @@
 
 {% block content %}
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Task Management</h1>
-                <p class="text-gray-600 mt-1">Manage your extracted and manual tasks</p>
-            </div>
-            <div class="flex space-x-3">
-                <button onclick="syncTasks()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                    <i class="fas fa-cloud-sync mr-2"></i>Sync Tasks
-                </button>
-                <button onclick="showCreateTaskModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                    <i class="fas fa-plus mr-2"></i>Add Task
-                </button>
+    <!-- Enhanced Header -->
+    <div class="card relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-green-600 via-teal-600 to-blue-700 opacity-90"></div>
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="relative p-8 text-white">
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i class="fas fa-tasks text-3xl animate-pulse"></i>
+                        <h1 class="text-4xl font-bold">Task Intelligence</h1>
+                    </div>
+                    <p class="text-green-100 text-lg mb-4">AI-powered task extraction and smart management system</p>
+                    <div class="flex items-center space-x-4 text-sm text-green-200">
+                        <span><i class="fas fa-robot mr-1"></i>Auto-Generated</span>
+                        <span><i class="fas fa-sync mr-1"></i>Google Sync</span>
+                        <span><i class="fas fa-brain mr-1"></i>Smart Prioritization</span>
+                    </div>
+                </div>
+                <div class="flex flex-col space-y-3 relative z-10">
+                    <button onclick="syncTasks()" class="btn-success px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all relative z-20 bg-green-600 text-white border-2 border-green-700">
+                        <i class="fas fa-cloud-sync mr-2"></i>Sync with Google
+                    </button>
+                    <button onclick="showCreateTaskModal()" class="btn-primary px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all relative z-20 bg-blue-600 text-white border-2 border-blue-700">
+                        <i class="fas fa-plus mr-2"></i>Create Task
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Stats -->
+    <!-- Enhanced Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-                    <i class="fas fa-tasks text-xl"></i>
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4">
+                        <i class="fas fa-tasks text-2xl text-blue-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Tasks</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ total_tasks or 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fas fa-list text-blue-500 mr-1"></i>
+                            All time created
+                        </p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Total Tasks</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ total_tasks }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
-                    <i class="fas fa-clock text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Pending</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ pending_tasks|length }}</p>
+                <div class="text-blue-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-tasks text-4xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-red-100 text-red-600">
-                    <i class="fas fa-exclamation-triangle text-xl"></i>
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4 bg-gradient-to-br from-yellow-100 to-yellow-50 border-yellow-200">
+                        <i class="fas fa-clock text-2xl text-yellow-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Pending</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ pending_tasks|length if pending_tasks else 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {% if pending_tasks and pending_tasks|length > 0 %}
+                                <i class="fas fa-exclamation-triangle text-orange-500 mr-1"></i>
+                                Needs attention
+                            {% else %}
+                                <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                                All completed!
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">High Priority</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ high_priority_tasks }}</p>
+                <div class="text-yellow-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-clock text-4xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4 bg-gradient-to-br from-red-100 to-red-50 border-red-200">
+                        <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">High Priority</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ high_priority_tasks or 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {% if high_priority_tasks and high_priority_tasks > 0 %}
+                                <i class="fas fa-fire text-red-500 mr-1"></i>
+                                Urgent attention
+                            {% else %}
+                                <i class="fas fa-thumbs-up text-green-500 mr-1"></i>
+                                Under control
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="text-red-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-exclamation-triangle text-4xl"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Pending Tasks -->
-    <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-900">Pending Tasks</h2>
+    <!-- Enhanced Pending Tasks -->
+    <div class="card">
+        <div class="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-green-50 to-teal-50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-green-100 rounded-lg">
+                        <i class="fas fa-list-check text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Active Tasks</h2>
+                        <p class="text-gray-600">Manage your pending and in-progress tasks</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="bulkComplete()" class="bg-white bg-opacity-80 text-gray-700 px-4 py-2 rounded-lg hover:bg-opacity-100 transition-all">
+                        <i class="fas fa-check-double mr-2"></i>Bulk Complete
+                    </button>
+                    <div class="text-sm text-gray-600 bg-white px-3 py-2 rounded-lg">
+                        {{ pending_tasks|length if pending_tasks else 0 }} active
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="p-6">
+        <div class="p-8">
             {% if pending_tasks %}
                 <div class="space-y-4">
                     {% for task in pending_tasks %}
-                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                    <div class="task-card border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 group">
                         <div class="flex justify-between items-start">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-2">
-                                    <h3 class="text-lg font-medium text-gray-900">{{ task.title }}</h3>
-                                    {% if task.priority == 'urgent' %}
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Urgent</span>
-                                    {% elif task.priority == 'high' %}
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">High</span>
-                                    {% elif task.priority == 'medium' %}
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Medium</span>
-                                    {% else %}
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Low</span>
-                                    {% endif %}
+                            <div class="flex items-start space-x-4 flex-1">
+                                <div class="flex-shrink-0 mt-1">
+                                    <input type="checkbox" class="task-checkbox w-5 h-5 text-green-600 rounded focus:ring-green-500" data-task-id="{{ task.id }}">
                                 </div>
-                                {% if task.description %}
-                                    <p class="text-gray-600 mt-1">{{ task.description }}</p>
-                                {% endif %}
-                                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                                    {% if task.due_date %}
-                                        <span><i class="fas fa-calendar mr-1"></i>Due: {{ task.due_date.strftime('%Y-%m-%d') }}</span>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <h3 class="text-lg font-bold text-gray-900 group-hover:text-green-600 transition-colors">{{ task.title }}</h3>
+                                        {% if task.priority == 'urgent' %}
+                                            <span class="priority-urgent px-3 py-1 text-xs font-bold rounded-full animate-pulse">Urgent</span>
+                                        {% elif task.priority == 'high' %}
+                                            <span class="priority-high px-3 py-1 text-xs font-bold rounded-full">High</span>
+                                        {% elif task.priority == 'medium' %}
+                                            <span class="priority-medium px-3 py-1 text-xs font-bold rounded-full">Medium</span>
+                                        {% else %}
+                                            <span class="priority-low px-3 py-1 text-xs font-bold rounded-full">Low</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if task.description %}
+                                        <p class="text-gray-600 mb-3 leading-relaxed">{{ task.description }}</p>
                                     {% endif %}
-                                    <span><i class="fas fa-clock mr-1"></i>Created: {{ task.created_at.strftime('%Y-%m-%d') }}</span>
-                                    {% if task.email_id %}
-                                        <span><i class="fas fa-envelope mr-1"></i>From Email</span>
-                                    {% endif %}
+                                    <div class="flex items-center space-x-6 text-sm text-gray-500">
+                                        {% if task.due_date %}
+                                            <div class="flex items-center space-x-1">
+                                                <i class="fas fa-calendar text-blue-500"></i>
+                                                <span>Due: {{ task.due_date.strftime('%m/%d/%Y') }}</span>
+                                            </div>
+                                        {% endif %}
+                                        <div class="flex items-center space-x-1">
+                                            <i class="fas fa-clock text-gray-400"></i>
+                                            <span>Created: {{ task.created_at.strftime('%m/%d') }}</span>
+                                        </div>
+                                        {% if task.email_id %}
+                                            <div class="flex items-center space-x-1 text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">
+                                                <i class="fas fa-envelope text-xs"></i>
+                                                <span class="text-xs font-semibold">AI Generated</span>
+                                            </div>
+                                        {% else %}
+                                            <div class="flex items-center space-x-1 text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                                                <i class="fas fa-user text-xs"></i>
+                                                <span class="text-xs font-semibold">Manual</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex space-x-2 ml-4">
-                                <button onclick="completeTask({{ task.id }})" class="text-green-600 hover:text-green-800">
-                                    <i class="fas fa-check-circle"></i>
+                            <div class="flex items-center space-x-2 ml-4">
+                                <button onclick="editTask({{ task.id }})" class="text-gray-400 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition-all">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="completeTask({{ task.id }})" class="text-gray-400 hover:text-green-600 p-2 rounded-lg hover:bg-green-50 transition-all">
+                                    <i class="fas fa-check-circle text-xl"></i>
                                 </button>
                             </div>
                         </div>
@@ -108,10 +197,13 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="text-center py-8">
-                    <i class="fas fa-check-circle text-6xl text-green-300 mb-4"></i>
-                    <h3 class="text-xl font-medium text-gray-900 mb-2">No Pending Tasks</h3>
-                    <p class="text-gray-600">All tasks are completed or no tasks have been created yet.</p>
+                <div class="text-center py-16">
+                    <i class="fas fa-check-circle text-8xl text-green-300 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">All Tasks Complete!</h3>
+                    <p class="text-gray-600 mb-6">Great job! You've completed all your tasks. Ready to create new ones?</p>
+                    <button onclick="showCreateTaskModal()" class="btn-primary px-6 py-3 rounded-xl font-semibold">
+                        <i class="fas fa-plus mr-2"></i>Create New Task
+                    </button>
                 </div>
             {% endif %}
         </div>
@@ -138,43 +230,65 @@
     {% endif %}
 </div>
 
-<!-- Create Task Modal -->
-<div id="createTaskModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
-    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Task</h3>
-        <form id="createTaskForm">
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Title</label>
-                    <input type="text" id="taskTitle" required 
-                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+<!-- Enhanced Create Task Modal -->
+<div id="createTaskModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="modal-content max-w-lg w-full mx-4 rounded-2xl overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-white bg-opacity-20 rounded-lg">
+                    <i class="fas fa-plus text-xl"></i>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="taskDescription" rows="3"
-                              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Due Date</label>
-                    <input type="date" id="taskDueDate"
-                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Priority</label>
-                    <select id="taskPriority" 
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="low">Low</option>
-                        <option value="medium" selected>Medium</option>
-                        <option value="high">High</option>
-                        <option value="urgent">Urgent</option>
-                    </select>
+                    <h3 class="text-2xl font-bold">Create New Task</h3>
+                    <p class="text-blue-100">Add a new task to your workflow</p>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end space-x-3">
-                <button type="button" onclick="hideCreateTaskModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Create Task</button>
-            </div>
-        </form>
+        </div>
+        <div class="p-8">
+            <form id="createTaskForm">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Task Title *</label>
+                        <input type="text" id="taskTitle" required 
+                               class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-all"
+                               placeholder="Enter a descriptive task title...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Description</label>
+                        <textarea id="taskDescription" rows="4"
+                                  class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-all resize-none"
+                                  placeholder="Add more details about this task..."></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Due Date</label>
+                            <input type="date" id="taskDueDate"
+                                   class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Priority</label>
+                            <select id="taskPriority" 
+                                    class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-all">
+                                <option value="low">🟢 Low Priority</option>
+                                <option value="medium" selected>🟡 Medium Priority</option>
+                                <option value="high">🟠 High Priority</option>
+                                <option value="urgent">🔴 Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end space-x-4">
+                    <button type="button" onclick="hideCreateTaskModal()" 
+                            class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold rounded-xl hover:bg-gray-100 transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="btn-primary px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                        <i class="fas fa-plus mr-2"></i>Create Task
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -182,44 +296,96 @@
 {% block scripts %}
 <script>
     async function completeTask(taskId) {
+        showLoading(true);
         try {
             await axios.post(`/api/tasks/${taskId}/complete`);
-            location.reload();
+            showToast('Task completed successfully! 🎉', 'success');
+            setTimeout(() => location.reload(), 1000);
         } catch (error) {
-            alert('Error completing task: ' + error.response.data.detail);
+            showToast('Error completing task: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
         }
     }
 
     async function syncTasks() {
+        showLoading(true);
         try {
             await axios.post('/api/sync-tasks');
-            alert('Tasks synchronized with Google Tasks!');
-            location.reload();
+            showToast('Tasks synchronized with Google Tasks! ☁️', 'success');
+            setTimeout(() => location.reload(), 1500);
         } catch (error) {
-            alert('Error syncing tasks: ' + error.response.data.detail);
+            showToast('Error syncing tasks: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+    
+    async function editTask(taskId) {
+        showToast('Task editing feature coming soon! ✏️', 'info');
+    }
+    
+    async function bulkComplete() {
+        const checkedTasks = document.querySelectorAll('.task-checkbox:checked');
+        if (checkedTasks.length === 0) {
+            showToast('Please select tasks to complete', 'warning');
+            return;
+        }
+        
+        showLoading(true);
+        try {
+            const taskIds = Array.from(checkedTasks).map(cb => cb.dataset.taskId);
+            
+            // Complete tasks one by one
+            for (const taskId of taskIds) {
+                await axios.post(`/api/tasks/${taskId}/complete`);
+            }
+            
+            showToast(`${taskIds.length} tasks completed successfully! 🎉`, 'success');
+            setTimeout(() => location.reload(), 1500);
+        } catch (error) {
+            showToast('Error completing tasks: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
         }
     }
 
     function showCreateTaskModal() {
-        document.getElementById('createTaskModal').classList.remove('hidden');
-        document.getElementById('createTaskModal').classList.add('flex');
+        const modal = document.getElementById('createTaskModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        // Focus on title input
+        setTimeout(() => {
+            document.getElementById('taskTitle').focus();
+        }, 100);
     }
 
     function hideCreateTaskModal() {
-        document.getElementById('createTaskModal').classList.add('hidden');
-        document.getElementById('createTaskModal').classList.remove('flex');
+        const modal = document.getElementById('createTaskModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
         document.getElementById('createTaskForm').reset();
     }
 
+    // Enhanced form submission
     document.getElementById('createTaskForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+        showLoading(true);
         
         const taskData = {
-            title: document.getElementById('taskTitle').value,
-            description: document.getElementById('taskDescription').value,
+            title: document.getElementById('taskTitle').value.trim(),
+            description: document.getElementById('taskDescription').value.trim(),
             due_date: document.getElementById('taskDueDate').value || null,
             priority: document.getElementById('taskPriority').value
         };
+
+        // Validation
+        if (!taskData.title) {
+            showToast('Please enter a task title', 'warning');
+            showLoading(false);
+            return;
+        }
 
         if (taskData.due_date) {
             taskData.due_date = new Date(taskData.due_date).toISOString();
@@ -228,9 +394,99 @@
         try {
             await axios.post('/api/tasks', taskData);
             hideCreateTaskModal();
-            location.reload();
+            showToast('Task created successfully! ✨', 'success');
+            setTimeout(() => location.reload(), 1000);
         } catch (error) {
-            alert('Error creating task: ' + error.response.data.detail);
+            showToast('Error creating task: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
+        }
+    });
+    
+    // Bulk selection functionality
+    function initializeBulkSelection() {
+        // Add select all checkbox
+        const bulkCompleteBtn = document.querySelector('button[onclick="bulkComplete()"]');
+        if (bulkCompleteBtn) {
+            const selectAllDiv = document.createElement('div');
+            selectAllDiv.innerHTML = `
+                <label class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
+                    <input type="checkbox" id="selectAll" class="rounded text-green-600 focus:ring-green-500">
+                    <span>Select all tasks</span>
+                </label>
+            `;
+            
+            const tasksContainer = document.querySelector('.space-y-4');
+            if (tasksContainer) {
+                tasksContainer.parentNode.insertBefore(selectAllDiv, tasksContainer);
+                
+                // Select all functionality
+                document.getElementById('selectAll').addEventListener('change', function(e) {
+                    const checkboxes = document.querySelectorAll('.task-checkbox');
+                    checkboxes.forEach(cb => cb.checked = e.target.checked);
+                    updateBulkCompleteButton();
+                });
+                
+                // Update bulk complete button state
+                document.querySelectorAll('.task-checkbox').forEach(cb => {
+                    cb.addEventListener('change', updateBulkCompleteButton);
+                });
+            }
+        }
+    }
+    
+    function updateBulkCompleteButton() {
+        const checkedTasks = document.querySelectorAll('.task-checkbox:checked');
+        const bulkBtn = document.querySelector('button[onclick="bulkComplete()"]');
+        
+        if (bulkBtn) {
+            if (checkedTasks.length > 0) {
+                bulkBtn.innerHTML = `<i class="fas fa-check-double mr-2"></i>Complete ${checkedTasks.length} Task${checkedTasks.length > 1 ? 's' : ''}`;
+                bulkBtn.classList.remove('bg-white', 'text-gray-700');
+                bulkBtn.classList.add('bg-green-600', 'text-white');
+            } else {
+                bulkBtn.innerHTML = '<i class="fas fa-check-double mr-2"></i>Bulk Complete';
+                bulkBtn.classList.add('bg-white', 'text-gray-700');
+                bulkBtn.classList.remove('bg-green-600', 'text-white');
+            }
+        }
+    }
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + N for new task
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+            e.preventDefault();
+            showCreateTaskModal();
+        }
+        
+        // Escape to close modal
+        if (e.key === 'Escape') {
+            hideCreateTaskModal();
+        }
+    });
+    
+    // Initialize features when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeBulkSelection();
+        
+        // Add task count animation
+        const taskCards = document.querySelectorAll('.task-card');
+        taskCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease-out';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+    
+    // Close modal when clicking outside
+    document.getElementById('createTaskModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideCreateTaskModal();
         }
     });
 </script>

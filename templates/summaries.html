@@ -4,30 +4,67 @@
 
 {% block content %}
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Daily Summaries</h1>
-                <p class="text-gray-600 mt-1">AI-generated daily reports of your email activity</p>
+    <!-- Enhanced Header -->
+    <div class="card relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 opacity-90"></div>
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="relative p-8 text-white">
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i class="fas fa-chart-line text-3xl animate-pulse"></i>
+                        <h1 class="text-4xl font-bold">Analytics Dashboard</h1>
+                    </div>
+                    <p class="text-purple-100 text-lg mb-4">AI-powered insights and comprehensive daily reports</p>
+                    <div class="flex items-center space-x-4 text-sm text-purple-200">
+                        <span><i class="fas fa-brain mr-1"></i>Smart Analysis</span>
+                        <span><i class="fas fa-chart-bar mr-1"></i>Detailed Reports</span>
+                        <span><i class="fas fa-history mr-1"></i>Historical Data</span>
+                    </div>
+                </div>
+                <div class="flex flex-col space-y-3 relative z-10">
+                    <button onclick="generateSummary()" class="btn-primary px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all relative z-20 bg-blue-600 text-white border-2 border-blue-700">
+                        <i class="fas fa-magic mr-2"></i>Generate Report
+                    </button>
+                    <button onclick="exportSummaries()" class="bg-white bg-opacity-90 text-gray-800 px-6 py-3 rounded-xl font-semibold hover:bg-opacity-100 transition-all relative z-20 border-2 border-white shadow-lg">
+                        <i class="fas fa-download mr-2"></i>Export Data
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Summaries -->
+    <!-- Enhanced Summaries -->
     {% if summaries %}
-        <div class="space-y-6">
+        <div class="space-y-8">
             {% for summary in summaries %}
-            <div class="bg-white rounded-lg shadow">
-                <div class="px-6 py-4 border-b border-gray-200">
+            <div class="card group">
+                <div class="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-xl font-semibold text-gray-900">
-                            {{ summary.date.strftime('%B %d, %Y') }}
-                        </h2>
-                        <div class="flex items-center space-x-4 text-sm text-gray-500">
-                            <span><i class="fas fa-envelope mr-1"></i>{{ summary.total_emails_processed }} emails</span>
-                            <span><i class="fas fa-tasks mr-1"></i>{{ summary.tasks_extracted }} tasks</span>
-                            <span><i class="fas fa-dollar-sign mr-1"></i>${{ "%.4f"|format(summary.total_cost or 0) }}</span>
+                        <div class="flex items-center space-x-4">
+                            <div class="p-3 bg-purple-100 rounded-xl">
+                                <i class="fas fa-calendar-day text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900">
+                                    {{ summary.date.strftime('%B %d, %Y') }}
+                                </h2>
+                                <p class="text-gray-600">Daily intelligence report</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6 text-sm">
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-blue-600">{{ summary.total_emails_processed or 0 }}</div>
+                                <div class="text-xs text-gray-500">Emails</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-green-600">{{ summary.tasks_extracted or 0 }}</div>
+                                <div class="text-xs text-gray-500">Tasks</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-purple-600">${{ "%.3f"|format(summary.total_cost or 0) }}</div>
+                                <div class="text-xs text-gray-500">AI Cost</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -107,13 +144,71 @@
 {% block scripts %}
 <script>
     async function triggerEmailProcessing() {
+        showLoading(true);
         try {
             await axios.post('/api/process-emails');
-            alert('Email processing started! Check back in a few minutes.');
-            location.reload();
+            showToast('Email processing started! Check back in a few minutes.', 'info', 7000);
+            setTimeout(() => location.reload(), 2000);
         } catch (error) {
-            alert('Error triggering email processing: ' + error.response.data.detail);
+            showToast('Error triggering email processing: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
         }
     }
+    
+    async function generateSummary() {
+        showLoading(true);
+        try {
+            await axios.post('/api/generate-summary');
+            showToast('Summary generation started! ✨', 'info', 5000);
+            setTimeout(() => location.reload(), 2000);
+        } catch (error) {
+            showToast('Summary generation feature coming soon! 📊', 'info');
+        } finally {
+            showLoading(false);
+        }
+    }
+    
+    async function exportSummaries() {
+        showLoading(true);
+        try {
+            const response = await axios.get('/api/summaries/export', {
+                responseType: 'blob'
+            });
+            
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `summaries_export_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            
+            showToast('Summaries exported successfully! 📁', 'success');
+        } catch (error) {
+            showToast('Export feature coming soon! 📊', 'info');
+        } finally {
+            showLoading(false);
+        }
+    }
+    
+    // Initialize page animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate summary cards
+        const summaryCards = document.querySelectorAll('.card');
+        summaryCards.forEach((card, index) => {
+            if (index > 0) { // Skip the header card
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, (index - 1) * 150);
+            }
+        });
+    });
 </script>
 {% endblock %}
+

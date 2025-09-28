@@ -4,115 +4,228 @@
 
 {% block content %}
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Email Processing</h1>
-                <p class="text-gray-600 mt-1">View and manage your processed emails</p>
-            </div>
-            <div class="flex space-x-3">
-                <button onclick="triggerEmailProcessing()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                    <i class="fas fa-sync mr-2"></i>Process Emails
-                </button>
+    <!-- Enhanced Header -->
+    <div class="card relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 opacity-90"></div>
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="relative p-8 text-white">
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i class="fas fa-envelope-open text-3xl animate-pulse"></i>
+                        <h1 class="text-4xl font-bold">Email Intelligence</h1>
+                    </div>
+                    <p class="text-blue-100 text-lg mb-4">AI-powered email analysis and processing dashboard</p>
+                    <div class="flex items-center space-x-4 text-sm text-blue-200">
+                        <span><i class="fas fa-brain mr-1"></i>Smart Processing</span>
+                        <span><i class="fas fa-shield-alt mr-1"></i>Secure Analysis</span>
+                        <span><i class="fas fa-lightning-bolt mr-1"></i>Real-time Updates</span>
+                    </div>
+                </div>
+                <div class="flex flex-col space-y-3 relative z-10">
+                    <button onclick="triggerEmailProcessing()" class="btn-primary px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all relative z-20 bg-blue-600 text-white border-2 border-blue-700">
+                        <i class="fas fa-sync mr-2"></i>Process New Emails
+                    </button>
+                    <button onclick="refreshEmails()" class="bg-white bg-opacity-90 text-gray-800 px-6 py-3 rounded-xl font-semibold hover:bg-opacity-100 transition-all relative z-20 border-2 border-white shadow-lg">
+                        <i class="fas fa-refresh mr-2"></i>Refresh View
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Stats -->
+    <!-- Enhanced Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-                    <i class="fas fa-envelope text-xl"></i>
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4">
+                        <i class="fas fa-envelope text-2xl text-blue-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Emails</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ total_emails or 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fas fa-database text-blue-500 mr-1"></i>
+                            All time count
+                        </p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Total Emails</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ total_emails }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-green-100 text-green-600">
-                    <i class="fas fa-check-circle text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Processed</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ processed_emails }}</p>
+                <div class="text-blue-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-envelope text-4xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
-                    <i class="fas fa-clock text-xl"></i>
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4 bg-gradient-to-br from-green-100 to-green-50 border-green-200">
+                        <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Processed</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ processed_emails or 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fas fa-robot text-green-500 mr-1"></i>
+                            AI analyzed
+                        </p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Pending</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ unprocessed_emails }}</p>
+                <div class="text-green-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-check-circle text-4xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4 bg-gradient-to-br from-yellow-100 to-yellow-50 border-yellow-200">
+                        <i class="fas fa-clock text-2xl text-yellow-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Pending</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ unprocessed_emails or 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {% if unprocessed_emails and unprocessed_emails > 0 %}
+                                <i class="fas fa-exclamation-triangle text-orange-500 mr-1"></i>
+                                Awaiting processing
+                            {% else %}
+                                <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                                All up to date!
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="text-yellow-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-clock text-4xl"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Emails List -->
-    <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-900">Recent Emails</h2>
+    <!-- Enhanced Emails List -->
+    <div class="card">
+        <div class="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-purple-50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-indigo-100 rounded-lg">
+                        <i class="fas fa-list text-indigo-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Email Analysis Results</h2>
+                        <p class="text-gray-600">Detailed view of processed emails with AI insights</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="exportEmails()" class="bg-white bg-opacity-80 text-gray-700 px-4 py-2 rounded-lg hover:bg-opacity-100 transition-all">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                    <div class="text-sm text-gray-600 bg-white px-3 py-2 rounded-lg">
+                        {{ emails|length if emails else 0 }} emails
+                    </div>
+                </div>
+            </div>
         </div>
+        
+        {% if emails %}
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Summary</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Importance</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tasks</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Received</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for email in emails %}
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ email.sender.split('@')[0] if '@' in email.sender else email.sender }}</div>
-                            <div class="text-sm text-gray-500">{{ email.sender.split('@')[1] if '@' in email.sender else '' }}</div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-medium text-gray-900">{{ email.subject[:60] }}{% if email.subject|length > 60 %}...{% endif %}</div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-600">{{ email.summary[:100] if email.summary else 'No summary available' }}{% if email.summary and email.summary|length > 100 %}...{% endif %}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            {% set importance = email.importance_score or 0 %}
-                            {% if importance >= 0.8 %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">High</span>
-                            {% elif importance >= 0.6 %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Medium</span>
-                            {% else %}
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Low</span>
-                            {% endif %}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            {% if email.has_action_items %}
-                                <i class="fas fa-tasks text-green-600"></i>
-                            {% else %}
-                                <i class="fas fa-minus text-gray-400"></i>
-                            {% endif %}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ email.received_at.strftime('%Y-%m-%d %H:%M') }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table class="min-w-full">
+                    <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Sender</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Subject & Summary</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">AI Analysis</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Received</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for email in emails %}
+                        <tr class="table-row group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex-shrink-0">
+                                        {% set importance = email.importance_score or 0 %}
+                                        {% if importance >= 0.8 %}
+                                            <div class="w-4 h-4 bg-red-500 rounded-full animate-pulse shadow-lg"></div>
+                                        {% elif importance >= 0.6 %}
+                                            <div class="w-4 h-4 bg-yellow-500 rounded-full shadow-lg"></div>
+                                        {% else %}
+                                            <div class="w-4 h-4 bg-green-500 rounded-full shadow-lg"></div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-900">{{ email.sender.split('@')[0] if '@' in email.sender else email.sender }}</div>
+                                        <div class="text-xs text-gray-500">{{ email.sender.split('@')[1] if '@' in email.sender else '' }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 max-w-md">
+                                <div class="text-sm font-semibold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
+                                    {{ email.subject[:80] }}{% if email.subject|length > 80 %}...{% endif %}
+                                </div>
+                                <div class="text-xs text-gray-600 bg-gray-50 rounded-lg p-2 leading-relaxed">
+                                    {{ email.summary[:150] if email.summary else 'No AI summary available yet' }}{% if email.summary and email.summary|length > 150 %}...{% endif %}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="space-y-2">
+                                    {% set importance = email.importance_score or 0 %}
+                                    {% if importance >= 0.8 %}
+                                        <span class="priority-urgent px-3 py-1 text-xs font-bold rounded-full">Critical</span>
+                                    {% elif importance >= 0.6 %}
+                                        <span class="priority-high px-3 py-1 text-xs font-bold rounded-full">Important</span>
+                                    {% elif importance >= 0.3 %}
+                                        <span class="priority-medium px-3 py-1 text-xs font-bold rounded-full">Normal</span>
+                                    {% else %}
+                                        <span class="priority-low px-3 py-1 text-xs font-bold rounded-full">Low</span>
+                                    {% endif %}
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        Score: {{ "%.2f"|format(importance) }}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    {% if email.has_action_items %}
+                                        <div class="flex items-center space-x-1 text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                                            <i class="fas fa-tasks text-xs"></i>
+                                            <span class="text-xs font-semibold">Tasks</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="flex items-center space-x-1 text-gray-400 bg-gray-50 px-2 py-1 rounded-full">
+                                            <i class="fas fa-minus text-xs"></i>
+                                            <span class="text-xs">None</span>
+                                        </div>
+                                    {% endif %}
+                                    <button onclick="viewEmailDetails({{ email.id }})" class="text-indigo-600 hover:text-indigo-800 p-1 rounded transition-colors">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                <div class="text-sm font-medium">{{ email.received_at.strftime('%m/%d') }}</div>
+                                <div class="text-xs text-gray-400">{{ email.received_at.strftime('%H:%M') }}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
+        {% else %}
+        <div class="text-center py-16">
+            <i class="fas fa-envelope-open text-8xl text-gray-300 mb-6"></i>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">No Emails Found</h3>
+            <p class="text-gray-600 mb-6">Start processing emails to see them appear here</p>
+            <button onclick="triggerEmailProcessing()" class="btn-primary px-6 py-3 rounded-xl font-semibold">
+                <i class="fas fa-sync mr-2"></i>Process Emails Now
+            </button>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
@@ -120,13 +233,103 @@
 {% block scripts %}
 <script>
     async function triggerEmailProcessing() {
+        showLoading(true);
         try {
             await axios.post('/api/process-emails');
-            alert('Email processing started! Check back in a few minutes.');
-            location.reload();
+            showToast('Email processing started! Check back in a few minutes.', 'info', 7000);
+            setTimeout(() => location.reload(), 2000);
         } catch (error) {
-            alert('Error triggering email processing: ' + error.response.data.detail);
+            showToast('Error triggering email processing: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
         }
     }
+    
+    async function refreshEmails() {
+        showLoading(true);
+        try {
+            showToast('Refreshing email list...', 'info', 2000);
+            setTimeout(() => location.reload(), 1000);
+        } finally {
+            showLoading(false);
+        }
+    }
+    
+    async function exportEmails() {
+        showLoading(true);
+        try {
+            const response = await axios.get('/api/emails/export', {
+                responseType: 'blob'
+            });
+            
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `emails_export_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            
+            showToast('Emails exported successfully!', 'success');
+        } catch (error) {
+            showToast('Export feature coming soon!', 'info');
+        } finally {
+            showLoading(false);
+        }
+    }
+    
+    async function viewEmailDetails(emailId) {
+        showLoading(true);
+        try {
+            // This would open a modal or navigate to email details
+            showToast('Email details view coming soon!', 'info');
+        } catch (error) {
+            showToast('Error loading email details: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+    
+    // Add search functionality
+    function initializeEmailSearch() {
+        const searchInput = document.createElement('div');
+        searchInput.innerHTML = `
+            <div class="mb-6">
+                <div class="relative">
+                    <input type="text" id="emailSearch" placeholder="Search emails by sender, subject, or content..." 
+                           class="w-full px-4 py-3 pl-12 pr-4 text-gray-700 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-4">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const emailsList = document.querySelector('.card');
+        if (emailsList) {
+            emailsList.parentNode.insertBefore(searchInput, emailsList);
+            
+            // Add search functionality
+            document.getElementById('emailSearch').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const emailRows = document.querySelectorAll('.table-row');
+                
+                emailRows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    }
+    
+    // Initialize search when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeEmailSearch();
+    });
 </script>
 {% endblock %}

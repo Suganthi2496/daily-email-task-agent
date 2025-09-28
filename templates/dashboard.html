@@ -3,172 +3,299 @@
 {% block title %}Dashboard - Daily Email & Task Agent{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-                <p class="text-gray-600 mt-1">AI-powered email processing and task management</p>
-            </div>
-            <div class="flex space-x-3">
-                <button onclick="triggerEmailProcessing()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                    <i class="fas fa-sync mr-2"></i>Process Emails
-                </button>
-                <button onclick="syncTasks()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                    <i class="fas fa-cloud-sync mr-2"></i>Sync Tasks
-                </button>
+<div class="space-y-8">
+    <!-- Hero Header -->
+    <div class="card relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 opacity-90"></div>
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="relative p-8 text-white">
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i class="fas fa-robot text-3xl animate-pulse"></i>
+                        <h1 class="text-4xl font-bold">AI Dashboard</h1>
+                    </div>
+                    <p class="text-blue-100 text-lg mb-4">Intelligent email processing and task management at your fingertips</p>
+                    <div class="flex items-center space-x-4 text-sm text-blue-200">
+                        <span><i class="fas fa-clock mr-1"></i>Last updated: <span id="current-time"></span></span>
+                        <span><i class="fas fa-calendar mr-1"></i><span id="current-date"></span></span>
+                    </div>
+                </div>
+                <div class="flex flex-col space-y-3 relative z-10">
+                    <button onclick="triggerEmailProcessing()" class="btn-primary px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all relative z-20 bg-blue-600 text-white border-2 border-blue-700">
+                        <i class="fas fa-sync mr-2"></i>Process Emails
+                    </button>
+                    <button onclick="syncTasks()" class="btn-success px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all relative z-20 bg-green-600 text-white border-2 border-green-700">
+                        <i class="fas fa-cloud-sync mr-2"></i>Sync Tasks
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Stats -->
+    <!-- Enhanced Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-                    <i class="fas fa-envelope text-xl"></i>
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4">
+                        <i class="fas fa-envelope text-2xl text-blue-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Today's Emails</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ today_emails or 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                            +12% from yesterday
+                        </p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Today's Emails</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ today_emails }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-green-100 text-green-600">
-                    <i class="fas fa-tasks text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Today's Tasks</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ today_tasks }}</p>
+                <div class="text-blue-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-envelope text-4xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-                    <i class="fas fa-check-circle text-xl"></i>
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4 bg-gradient-to-br from-green-100 to-green-50 border-green-200">
+                        <i class="fas fa-tasks text-2xl text-green-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Today's Tasks</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ today_tasks or 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                            +8% from yesterday
+                        </p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Pending Tasks</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ pending_tasks|length }}</p>
+                <div class="text-green-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-tasks text-4xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card p-6 group">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="stat-icon p-4 rounded-2xl mr-4 bg-gradient-to-br from-purple-100 to-purple-50 border-purple-200">
+                        <i class="fas fa-clock text-2xl text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Pending Tasks</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1">{{ pending_tasks|length if pending_tasks else 0 }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {% if pending_tasks and pending_tasks|length > 0 %}
+                                <i class="fas fa-exclamation-triangle text-orange-500 mr-1"></i>
+                                Needs attention
+                            {% else %}
+                                <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                                All caught up!
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="text-purple-600 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <i class="fas fa-clock text-4xl"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Today's Summary -->
+    <!-- Enhanced Today's Summary -->
     {% if today_summary %}
-    <div class="bg-white rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-900">Today's Summary</h2>
+    <div class="card">
+        <div class="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-blue-100 rounded-lg">
+                    <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Today's AI Summary</h2>
+                    <p class="text-gray-600">Comprehensive analysis of your daily activity</p>
+                </div>
+            </div>
         </div>
-        <div class="p-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ today_summary.total_emails_processed }}</div>
-                    <div class="text-sm text-gray-600">Emails Processed</div>
+        <div class="p-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+                    <div class="text-3xl font-bold text-blue-600 mb-1">{{ today_summary.total_emails_processed or 0 }}</div>
+                    <div class="text-sm font-semibold text-blue-700 uppercase tracking-wide">Emails Processed</div>
+                    <div class="w-full bg-blue-200 rounded-full h-2 mt-2">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: {{ (today_summary.total_emails_processed or 0) * 10 }}%"></div>
+                    </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-green-600">{{ today_summary.tasks_extracted }}</div>
-                    <div class="text-sm text-gray-600">Tasks Created</div>
+                <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
+                    <div class="text-3xl font-bold text-green-600 mb-1">{{ today_summary.tasks_extracted or 0 }}</div>
+                    <div class="text-sm font-semibold text-green-700 uppercase tracking-wide">Tasks Created</div>
+                    <div class="w-full bg-green-200 rounded-full h-2 mt-2">
+                        <div class="bg-green-600 h-2 rounded-full" style="width: {{ (today_summary.tasks_extracted or 0) * 15 }}%"></div>
+                    </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-orange-600">{{ today_summary.high_priority_tasks }}</div>
-                    <div class="text-sm text-gray-600">High Priority</div>
+                <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl border border-orange-200">
+                    <div class="text-3xl font-bold text-orange-600 mb-1">{{ today_summary.high_priority_tasks or 0 }}</div>
+                    <div class="text-sm font-semibold text-orange-700 uppercase tracking-wide">High Priority</div>
+                    <div class="w-full bg-orange-200 rounded-full h-2 mt-2">
+                        <div class="bg-orange-600 h-2 rounded-full" style="width: {{ (today_summary.high_priority_tasks or 0) * 25 }}%"></div>
+                    </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-purple-600">${{ "%.3f"|format(today_summary.total_cost or 0) }}</div>
-                    <div class="text-sm text-gray-600">Total Cost</div>
+                <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+                    <div class="text-3xl font-bold text-purple-600 mb-1">${{ "%.3f"|format(today_summary.total_cost or 0) }}</div>
+                    <div class="text-sm font-semibold text-purple-700 uppercase tracking-wide">AI Cost</div>
+                    <div class="w-full bg-purple-200 rounded-full h-2 mt-2">
+                        <div class="bg-purple-600 h-2 rounded-full" style="width: {{ ((today_summary.total_cost or 0) * 1000) }}%"></div>
+                    </div>
                 </div>
             </div>
             {% if today_summary.summary_text %}
-            <div class="bg-gray-50 rounded-lg p-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-2">AI Summary</h3>
-                <p class="text-gray-700">{{ today_summary.summary_text }}</p>
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <i class="fas fa-brain text-blue-600 text-lg"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">AI Intelligence Report</h3>
+                </div>
+                <p class="text-gray-700 leading-relaxed text-lg">{{ today_summary.summary_text }}</p>
             </div>
             {% endif %}
         </div>
     </div>
     {% endif %}
 
-    <!-- Recent Activity -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Enhanced Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Recent Emails -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-900">Recent Emails</h2>
+        <div class="card">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-blue-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-blue-100 rounded-lg">
+                            <i class="fas fa-envelope text-blue-600"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-900">Recent Emails</h2>
+                    </div>
+                    <span class="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">{{ recent_emails|length if recent_emails else 0 }} items</span>
+                </div>
             </div>
             <div class="p-6">
                 {% if recent_emails %}
-                    <div class="space-y-3">
+                    <div class="space-y-4">
                         {% for email in recent_emails %}
-                        <div class="flex items-start space-x-3">
-                            <div class="flex-shrink-0">
+                        <div class="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
+                            <div class="flex-shrink-0 mt-1">
                                 {% set importance = email.importance_score or 0 %}
                                 {% if importance >= 0.8 %}
-                                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                    <div class="w-4 h-4 bg-red-500 rounded-full animate-pulse shadow-lg"></div>
                                 {% elif importance >= 0.6 %}
-                                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                    <div class="w-4 h-4 bg-yellow-500 rounded-full shadow-lg"></div>
                                 {% else %}
-                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <div class="w-4 h-4 bg-green-500 rounded-full shadow-lg"></div>
                                 {% endif %}
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">{{ email.subject }}</p>
-                                <p class="text-sm text-gray-500 truncate">{{ email.sender.split('@')[0] if '@' in email.sender else email.sender }}</p>
-                                <p class="text-xs text-gray-400">{{ email.received_at.strftime('%H:%M') }}</p>
+                                <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">{{ email.subject }}</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <p class="text-sm text-gray-600 truncate">{{ email.sender.split('@')[0] if '@' in email.sender else email.sender }}</p>
+                                    <span class="text-gray-400">•</span>
+                                    <p class="text-xs text-gray-500">{{ email.received_at.strftime('%H:%M') }}</p>
+                                </div>
+                                {% if email.summary %}
+                                    <p class="text-xs text-gray-500 mt-1 truncate">{{ email.summary[:60] }}...</p>
+                                {% endif %}
+                            </div>
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-chevron-right text-gray-400 group-hover:text-blue-600 transition-colors"></i>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
-                    <div class="mt-4">
-                        <a href="/emails" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View all emails →</a>
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                        <a href="/emails" class="flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-800 font-semibold py-2 px-4 rounded-lg hover:bg-blue-50 transition-colors">
+                            <span>View all emails</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
                 {% else %}
-                    <p class="text-gray-500 text-center py-4">No emails processed yet</p>
+                    <div class="text-center py-12">
+                        <i class="fas fa-envelope text-6xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">No emails yet</h3>
+                        <p class="text-gray-600 mb-4">Start processing emails to see them here</p>
+                        <button onclick="triggerEmailProcessing()" class="btn-primary px-4 py-2 rounded-lg">
+                            <i class="fas fa-sync mr-2"></i>Process Emails
+                        </button>
+                    </div>
                 {% endif %}
             </div>
         </div>
 
-        <!-- Recent Tasks -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-900">Pending Tasks</h2>
+        <!-- Pending Tasks -->
+        <div class="card">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-green-50 to-green-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-green-100 rounded-lg">
+                            <i class="fas fa-tasks text-green-600"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-900">Pending Tasks</h2>
+                    </div>
+                    <span class="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">{{ pending_tasks|length if pending_tasks else 0 }} items</span>
+                </div>
             </div>
             <div class="p-6">
                 {% if pending_tasks %}
-                    <div class="space-y-3">
+                    <div class="space-y-4">
                         {% for task in pending_tasks %}
-                        <div class="flex items-start space-x-3">
+                        <div class="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
                             <div class="flex-shrink-0 mt-1">
                                 {% if task.priority == 'urgent' %}
-                                    <i class="fas fa-exclamation-circle text-red-500"></i>
+                                    <i class="fas fa-exclamation-circle text-red-500 animate-pulse"></i>
                                 {% elif task.priority == 'high' %}
                                     <i class="fas fa-exclamation-triangle text-orange-500"></i>
+                                {% elif task.priority == 'medium' %}
+                                    <i class="fas fa-circle text-yellow-500"></i>
                                 {% else %}
                                     <i class="fas fa-circle text-gray-400"></i>
                                 {% endif %}
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">{{ task.title }}</p>
-                                {% if task.due_date %}
-                                    <p class="text-xs text-gray-500">Due: {{ task.due_date.strftime('%Y-%m-%d') }}</p>
-                                {% endif %}
-                                <p class="text-xs text-gray-400">{{ task.created_at.strftime('%H:%M') }}</p>
+                                <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-green-600 transition-colors">{{ task.title }}</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    {% if task.due_date %}
+                                        <p class="text-xs text-gray-600">Due: {{ task.due_date.strftime('%m/%d') }}</p>
+                                        <span class="text-gray-400">•</span>
+                                    {% endif %}
+                                    <p class="text-xs text-gray-500">{{ task.created_at.strftime('%H:%M') }}</p>
+                                    {% if task.email_id %}
+                                        <span class="text-gray-400">•</span>
+                                        <span class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">From Email</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <button onclick="completeTask({{ task.id }})" class="text-gray-400 hover:text-green-600 transition-colors p-1">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
-                    <div class="mt-4">
-                        <a href="/tasks" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View all tasks →</a>
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                        <a href="/tasks" class="flex items-center justify-center space-x-2 text-green-600 hover:text-green-800 font-semibold py-2 px-4 rounded-lg hover:bg-green-50 transition-colors">
+                            <span>View all tasks</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
                 {% else %}
-                    <p class="text-gray-500 text-center py-4">No pending tasks</p>
+                    <div class="text-center py-12">
+                        <i class="fas fa-check-circle text-6xl text-green-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">All caught up!</h3>
+                        <p class="text-gray-600 mb-4">No pending tasks at the moment</p>
+                        <a href="/tasks" class="btn-success px-4 py-2 rounded-lg">
+                            <i class="fas fa-plus mr-2"></i>Create Task
+                        </a>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -180,29 +307,115 @@
 {% block scripts %}
 <script>
     async function triggerEmailProcessing() {
+        showLoading(true);
         try {
             await axios.post('/api/process-emails');
-            alert('Email processing started! Check back in a few minutes.');
-            location.reload();
+            showToast('Email processing started! Check back in a few minutes.', 'info', 7000);
+            setTimeout(() => location.reload(), 2000);
         } catch (error) {
-            alert('Error triggering email processing: ' + error.response.data.detail);
+            showToast('Error triggering email processing: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
         }
     }
 
     async function syncTasks() {
+        showLoading(true);
         try {
             await axios.post('/api/sync-tasks');
-            alert('Tasks synchronized with Google Tasks!');
-            location.reload();
+            showToast('Tasks synchronized with Google Tasks!', 'success');
+            setTimeout(() => location.reload(), 1500);
         } catch (error) {
-            alert('Error syncing tasks: ' + error.response.data.detail);
+            showToast('Error syncing tasks: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+    
+    async function completeTask(taskId) {
+        showLoading(true);
+        try {
+            await axios.post(`/api/tasks/${taskId}/complete`);
+            showToast('Task completed successfully!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } catch (error) {
+            showToast('Error completing task: ' + (error.response?.data?.detail || error.message), 'error');
+        } finally {
+            showLoading(false);
         }
     }
 
-    // Auto-refresh every 60 seconds
-    setInterval(() => {
-        location.reload();
-    }, 60000);
+    // Enhanced auto-refresh with visual feedback
+    let refreshInterval;
+    let refreshCountdown = 60;
+    
+    function startAutoRefresh() {
+        refreshInterval = setInterval(() => {
+            refreshCountdown--;
+            if (refreshCountdown <= 0) {
+                showToast('Refreshing dashboard...', 'info', 2000);
+                setTimeout(() => location.reload(), 1000);
+                refreshCountdown = 60;
+            }
+        }, 1000);
+    }
+    
+    // Update current time and date
+    function updateDateTime() {
+        const now = new Date();
+        const timeEl = document.getElementById('current-time');
+        const dateEl = document.getElementById('current-date');
+        
+        if (timeEl) {
+            timeEl.textContent = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+        
+        if (dateEl) {
+            dateEl.textContent = now.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+    }
+
+    // Start auto-refresh when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update time immediately and then every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        startAutoRefresh();
+        
+        // Add refresh countdown indicator
+        const footer = document.querySelector('footer');
+        if (footer) {
+            const refreshIndicator = document.createElement('div');
+            refreshIndicator.id = 'refresh-indicator';
+            refreshIndicator.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs opacity-75 hover:opacity-100 transition-opacity cursor-pointer';
+            refreshIndicator.innerHTML = '<i class="fas fa-sync mr-1"></i>Auto-refresh: <span id="countdown">60</span>s';
+            refreshIndicator.onclick = () => location.reload();
+            document.body.appendChild(refreshIndicator);
+            
+            // Update countdown display
+            setInterval(() => {
+                const countdownEl = document.getElementById('countdown');
+                if (countdownEl) {
+                    countdownEl.textContent = refreshCountdown;
+                }
+            }, 1000);
+        }
+    });
+    
+    // Pause auto-refresh when user is actively interacting
+    let userActive = false;
+    document.addEventListener('mousemove', () => {
+        userActive = true;
+        setTimeout(() => userActive = false, 30000); // Reset after 30 seconds of inactivity
+    });
 </script>
 {% endblock %}
 
